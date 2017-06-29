@@ -3,21 +3,69 @@
 <div class="container">
       <div class="row">
             <div class="col-md-4">
-            <h5>Marcador</h5>
-      </div>
+                  <div *ngIf="!marcadorSel" >
+                        <div class="alert alert-info" role="alert">
+                              <strong>Haga Click</strong>
+                              sobre el mapa o seleccione un marcador
+                        </div>
+                  </div>
+
+                  <div *ngIf="marcadorSel" >
+                        <h5>Marcador</h5>      
+                        <hr>
+                        <div class="form-group">
+                          <label for="titulo">Titulo</label>
+                          <input 
+                              type="text" 
+                              name="titulo" 
+                              class="form-control" 
+                              [(ngModel)]="marcadorSel.titulo">
+                        </div>
+
+                        <div class="form-group">
+                          <label for="desc">Descripción</label>
+                          <textarea 
+                              [(ngModel)]="marcadorSel.desc" 
+                              rows="5" name="desc" 
+                              class="form-control"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                          <div class="form-check">
+                            <label class="form-check-label">
+                              <input type="checkbox" class="form-check-input" name="drag" id="" [(ngModel)]="marcadorSel.draggable">
+                              Draggable
+                            </label>
+                          </div>
+                        </div>
+
+                        <button 
+                              (click) ="mapasService.guardarMarcadores()" 
+                              type="button" 
+                              class="btn btn-outline-primary btn-block" >
+                              Guardar Cambios
+                        </button>
+                  </div>
+                  
+
+            </div>
       <div class="col-md-8">
             <agm-map 
             [latitude]="lat" 
             [longitude]="lng" 
             [zoom]="zoom"
             (mapClick)="clickMapa( $event )">
-                  <agm-marker *ngFor="let marcador of mapasService.marcadores"
+                  <agm-marker *ngFor="let marcador of mapasService.marcadores; let i = index"
                         [latitude]="marcador.lat" 
                         [longitude]="marcador.lng"
-                        [title]="marcador.titulo">
+                        [title]="marcador.titulo"
+                        [markerDraggable]="marcador.draggable"
+                        (markerClick)="clickMarcador(marcador,i)"
+                        (dragEnd)="dragEndMarcador(marcador, $event)" >
                         <agm-info-window>
                               <strong>{{marcador.titulo}}</strong>
                               <p *ngIf="marcador.desc">{{marcador.desc}}</p>
+                              <p><a (click)="mapasService.borrarMarcador(i); marcadorSel = null" class="text-danger puntero" >Borrar Marcador</a></p>
                         </agm-info-window>
                   </agm-marker>
             </agm-map>
