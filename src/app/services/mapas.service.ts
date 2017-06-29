@@ -10,8 +10,7 @@ export class MapasService {
       lat:4.711448,
       lng:-74.112299,
       titulo:"Portal de la 80",
-      draggable:true,
-      desc:"titulo"
+      draggable:true
     }
     this.marcadores.push(nuevoMarcador);
     console.log(this.marcadores);
